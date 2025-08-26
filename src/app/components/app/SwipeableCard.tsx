@@ -72,7 +72,7 @@ export default function SwipeableCard({
         x: isTopCard ? x : 0,
         opacity: isTopCard ? opacity : 1,
       }}
-      className="group relative rounded-2xl shadow-lg h-96 w-72"
+      className="group relative rounded-2xl shadow-lg h-96 w-72 hover:cursor-grab active:cursor-grabbing"
       drag={isTopCard ? "x" : false}
       dragConstraints={{ left: 0, right: 0 }}
       onDragEnd={isTopCard ? handleDragEnd : undefined}
