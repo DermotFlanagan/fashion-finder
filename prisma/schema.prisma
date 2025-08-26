@@ -1,15 +1,194 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id            String    @id
+  name          String
+  email         String
+  emailVerified Boolean
+  image         String?
+  createdAt     DateTime
+  updatedAt     DateTime
+  sessions      Session[]
+  accounts      Account[]
+  posts         Post[]
+  likes         Like[]
+  comments      Comment[]
+  following     Follow[] @relation("UserFollowing")
+  followers     Follow[] @relation("UserFollowers")
+  swipes        Swipe[]
+  preferences   UserPreference[]
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+
+  @@map("account")
+}
+
+model Verification {
+  id         String    @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@map("verification")
+}
+
+model Post {
+  id            String   @id @default(cuid())
+  title         String    
+  body          String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  likes         Like[]
+  comments      Comment[]
+
+  @@map("post")
+}
+
+
+model Like {
+  id            String @id @default(cuid())
+  postId        String 
+  userId        String
+  post          Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user          User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId])
+  @@map("like")
+}
+
+model Comment {
+  id            String @id @default(cuid())
+  postId        String
+  userId        String
+  post          Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user          User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  content       String
+
+  @@map("comment")
+}
+
+model Follow {
+  id            String @id @default(cuid())
+  followerId    String
+  followingId   String
+  createdAt     DateTime @default(now())
+  follower      User @relation("UserFollowing", fields: [followerId], references: [id], onDelete: Cascade)
+  following     User @relation("UserFollowers", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@unique([followerId, followingId])
+  @@map("follow")
+}
+
+model Swipe {
+  id            String @id @default(cuid())
+  userId        String
+  itemId        String
+  direction     SwipeDirection
+  createdAt     DateTime @default(now())
+
+  user          User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item          Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, itemId])
+  @@index([userId, createdAt])
+  @@index([itemId, createdAt])
+  @@map("swipe")
+}
+
+enum SwipeDirection {
+  RIGHT
+  LEFT
+}
+
+model Item {
+  id            String @id @default(cuid())
+  name          String
+  price         Float
+  image         String
+  rating        Float
+  totalReviews  Int
+  categories    CategoryOnItem[]
+  swipes        Swipe[]
+
+  @@map("item")
+}
+
+model Category {
+  id            String @id @default(cuid())
+  name          String @unique
+  items         CategoryOnItem[]
+  preferences   UserPreference[]
+  @@map("category")
+}
+
+model CategoryOnItem {
+  itemId        String
+  categoryId    String
+  item          Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  category      Category @relation(fields:[categoryId], references: [id], onDelete: Cascade)
+  @@id([itemId, categoryId])
+  @@map("category_on_item")
+}
+
+model UserPreference {
+  userId        String
+  categoryId    String
+  score         Float @default(0)
+  updatedAt     DateTime @updatedAt
+  user          User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category      Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([userId, categoryId])
+  @@index([userId, score])
+  @@map("user_preference")
+}
+

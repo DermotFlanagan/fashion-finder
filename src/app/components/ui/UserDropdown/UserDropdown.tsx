@@ -1,10 +1,18 @@
 import { Heart, LogOut, Settings, User } from "lucide-react";
 import DropdownItem from "./DropdownItem";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "@/lib/auth-client";
 
 function UserDropdown() {
+  const { data: session } = useSession();
   const handleSignOut = () => {
-    signOut();
+    if (!session) return;
+    signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          window.location.href = "/";
+        },
+      },
+    });
   };
 
   return (

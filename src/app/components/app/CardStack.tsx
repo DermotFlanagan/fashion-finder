@@ -1,18 +1,30 @@
 import SwipeableCard from "./SwipeableCard";
 
+interface Category {
+  id: string;
+  name: string;
+}
+
+interface CategoryOnItem {
+  itemId: string;
+  categoryId: string;
+  category: Category;
+}
+
 interface Card {
-  id: number;
+  id: string;
   image: string;
-  title: string;
-  categories: string[];
+  name: string;
+  categories: CategoryOnItem[];
   price: number;
   rating?: number;
-  reviews: number;
+  totalReviews: number;
+  preferenceScore?: number;
 }
 
 interface CardStackProps {
   cards: Card[];
-  onSwipe: (card: Card, direction: "left" | "right") => void;
+  onSwipe: (itemId: string, direction: "RIGHT" | "LEFT") => void;
 }
 
 function CardStack({ cards, onSwipe }: CardStackProps) {

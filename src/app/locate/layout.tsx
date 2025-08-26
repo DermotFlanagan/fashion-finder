@@ -7,7 +7,7 @@ export default function LocateLayout({
 }) {
   return (
     <>
-      <Navbar />
+      <Navbar fixed={true} />
       <main className="min-h-screen">{children}</main>
     </>
   );

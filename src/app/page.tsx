@@ -17,7 +17,7 @@ export default function HomePage() {
         Your browser does not support the video tag.
       </video>
 
-      <div className="flex flex-col items-center justify-center h-full  text-white">
+      <div className="flex flex-col items-center justify-center h-full  text-white ">
         <Image
           src="/logo-bg-circular-plain.png"
           width={150}
@@ -39,7 +39,8 @@ export default function HomePage() {
           {/* <button className="bg-white text-black px-6 py-2 rounded-full cursor-pointer hover:bg-gray-300 transition">
             Sign in
           </button> */}
-          <SignInButton />
+          <SignInButton provider="github" />
+          <SignInButton provider="google" />
         </div>
 
         <div className="fixed bottom-0 left-0 right-0 p-4 text-center text-sm">

@@ -1,9 +1,9 @@
 "use client";
-import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, Heart, Trash } from "lucide-react";
+import { ArrowLeft, Trash } from "lucide-react";
+import { useSession } from "@/lib/auth-client";
 
 interface Card {
   id: number;
@@ -36,7 +36,7 @@ export default function WishlistPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="flex items-center justify-center p-4">
       <div className="bg-white/50 shadow-lg ring-1 ring-white/15 px-8 py-10 rounded-3xl backdrop-blur-2xl w-full max-w-6xl max-h-[80vh] flex flex-col">
         <div className="flex items-center gap-4 mb-8 flex-shrink-0">
           <Link href="/account">
@@ -62,7 +62,7 @@ export default function WishlistPage() {
                   key={item.id}
                   className="rounded-2xl overflow-hidden border border-gray-200 hover:border-gray-300 hover:shadow-md transition group"
                 >
-                  <div className="aspect-square relative">
+                  <div className="aspect-square relative w-48 h-48">
                     <Image
                       src={item.image}
                       alt={item.title}

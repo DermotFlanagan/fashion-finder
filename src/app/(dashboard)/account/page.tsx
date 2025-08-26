@@ -1,15 +1,24 @@
 "use client";
-import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { User, Heart, Settings, BookHeart } from "lucide-react";
+import { signOut, useSession } from "@/lib/auth-client";
 
 export default function AccountPage() {
   const { data: session } = useSession();
-
   if (!session) {
     return <div>Loading...</div>;
   }
+  const handleSignOut = () => {
+    if (!session) return;
+    signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          window.location.href = "/";
+        },
+      },
+    });
+  };
 
   const accountTabs = [
     {
@@ -39,10 +48,10 @@ export default function AccountPage() {
   ];
 
   return (
-    <div className="min-h-screen p-6 max-w-4xl mx-auto flex items-center justify-center">
+    <div className="p-6 max-w-4xl mx-auto flex items-center justify-center">
       <div className="bg-white/50 shadow-lg ring-1 ring-white/15 px-8 py-10 rounded-3xl backdrop-blur-2xl">
         <div className="flex items-center gap-6 mb-8">
-          <div className="relative">
+          <div className="relative hidden md:block">
             <Image
               src={session.user?.image || ""}
               alt="Profile"
@@ -56,6 +65,14 @@ export default function AccountPage() {
               {session.user?.name || "User"}
             </h1>
             <p className="text-gray-600">{session.user?.email}</p>
+            <div className="flex gap-4">
+              <p>
+                <span className="font-bold">0</span> following
+              </p>
+              <p>
+                <span className="font-bold">0</span> followers
+              </p>
+            </div>
           </div>
         </div>
 
@@ -87,7 +104,7 @@ export default function AccountPage() {
         </div>
         <div
           className="bg-white flex items-center justify-center mt-12 rounded-xl border border-gray-200 hover:border-gray-300 transition hover:shadow-md cursor-pointer py-2"
-          onClick={() => signOut()}
+          onClick={handleSignOut}
         >
           Log Out
         </div>

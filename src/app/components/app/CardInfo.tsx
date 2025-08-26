@@ -2,14 +2,26 @@ import { Star } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 
+interface Category {
+  id: string;
+  name: string;
+}
+
+interface CategoryOnItem {
+  itemId: string;
+  categoryId: string;
+  category: Category;
+}
+
 interface Card {
-  id: number;
+  id: string;
   image: string;
-  title: string;
-  categories: string[];
+  name: string;
+  categories: CategoryOnItem[];
   price: number;
   rating?: number;
-  reviews: number;
+  totalReviews: number;
+  preferenceScore?: number;
 }
 
 interface CardInfoProps {
@@ -54,15 +66,15 @@ function CardInfo({ card }: CardInfoProps) {
   return (
     <div className="flex flex-col justify-between h-full">
       <div className="flex flex-col gap-4 mt-5 cursor-default">
-        <h1 className="font-bold text-3xl ">{card.title}</h1>
+        <h1 className="font-bold text-3xl ">{card.name}</h1>
 
         <div className="flex flex-wrap gap-2">
-          {card.categories.slice(0, 4).map((category, idx) => (
+          {card.categories.slice(0, 4).map((categoryOnItem, idx) => (
             <span
               key={idx}
               className="bg-gray-200 text-gray-800 px-2 py-1 rounded-lg text-sm font-semibold "
             >
-              {category}
+              {categoryOnItem.category.name}
             </span>
           ))}
           {card.categories.length > 4 && (
@@ -89,7 +101,7 @@ function CardInfo({ card }: CardInfoProps) {
           <div className="flex">{renderStars(card.rating)}</div>
           <span className=" ml-4 cursor-default">
             {card.rating
-              ? `${card.rating.toFixed(1)} (${card.reviews} reviews)`
+              ? `${card.rating.toFixed(1)} (${card.totalReviews} reviews)`
               : "No rating"}
           </span>
         </div>

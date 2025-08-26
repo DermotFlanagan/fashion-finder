@@ -3,60 +3,87 @@ import ActionButtons from "@/app/components/app/ActionButtons";
 import CardInfo from "@/app/components/app/CardInfo";
 import CardStack from "@/app/components/app/CardStack";
 import NoCards from "@/app/components/app/NoCards";
-import CARDS from "@/app/data/cards";
+import Spinner from "@/app/components/ui/Spinner";
+import { useCards } from "@/hooks/useCards";
+import { useSwipe } from "@/hooks/useSwipe";
+import { useSession } from "@/lib/auth-client";
 import { useEffect, useState } from "react";
 
+interface Category {
+  id: string;
+  name: string;
+}
+
+interface CategoryOnItem {
+  itemId: string;
+  categoryId: string;
+  category: Category;
+}
+
 interface Card {
-  id: number;
+  id: string;
   image: string;
-  title: string;
-  categories: string[];
+  name: string;
+  categories: CategoryOnItem[];
   price: number;
-  reviews: number;
+  rating?: number;
+  totalReviews: number;
+  preferenceScore?: number;
 }
 
 export default function AppPage() {
-  const [remainingCards, setRemainingCards] = useState<Card[]>(CARDS);
-  const [swipedCards, setSwipedCards] = useState<{
-    liked: Card[];
-    disliked: Card[];
-  }>({
-    liked: [],
-    disliked: [],
-  });
+  const { data: session } = useSession();
+  const { data: cards, isLoading, error, refetch } = useCards();
+  const { swipe, isLoading: isSwipeLoading } = useSwipe();
+  const [remainingCards, setRemainingCards] = useState<Card[]>([]);
   const [wishlistedCards, setWishlistedCards] = useState<Card[]>([]);
 
   useEffect(
     function () {
-      console.log(wishlistedCards.map((card) => card.title));
       localStorage.setItem("wishlist", JSON.stringify(wishlistedCards)); // TEMP, move to backend storage later
     },
     [wishlistedCards]
   );
 
+  useEffect(
+    function () {
+      if (cards?.cards) {
+        setRemainingCards(cards.cards);
+      }
+    },
+    [cards]
+  );
+
   const currentCard = remainingCards[0];
 
-  function handleSwipe(card: Card, direction: "left" | "right") {
-    setRemainingCards((prev) => prev.filter((c) => c.id !== card.id));
-    if (direction == "right") {
-      setSwipedCards((prev) => ({ ...prev, liked: [...prev.liked, card] }));
-    } else {
-      setSwipedCards((prev) => ({
-        ...prev,
-        disliked: [...prev.disliked, card],
-      }));
+  async function handleSwipe(itemId: string, direction: "RIGHT" | "LEFT") {
+    if (!session?.user?.id) {
+      console.error("No user session found");
+      return;
+    }
+
+    try {
+      await swipe({
+        userId: session.user.id,
+        itemId,
+        direction,
+      });
+
+      setRemainingCards((prev) => prev.filter((card) => card.id !== itemId));
+    } catch (error) {
+      console.error("Error recording swipe:", error);
     }
   }
 
   function handleLeft() {
     if (currentCard) {
-      handleSwipe(currentCard, "left");
+      handleSwipe(currentCard.id, "LEFT");
     }
   }
 
   function handleRight() {
     if (currentCard) {
-      handleSwipe(currentCard, "right");
+      handleSwipe(currentCard.id, "RIGHT");
     }
   }
 
@@ -75,9 +102,12 @@ export default function AppPage() {
     });
   }
 
+  if (isLoading) return <Spinner />;
+  if (error) return <div>ERROR</div>;
+
   return (
-    <div className="min-h-screen flex items-center justify-center overflow-x-hidden">
-      {remainingCards.length === 0 ? (
+    <div className="">
+      {remainingCards.length === 0 && !isLoading ? (
         <div>
           <NoCards />
         </div>

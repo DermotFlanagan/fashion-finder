@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import AuthSessionProvider from "./components/SessionProvider";
 import nata from "./ui/fonts";
 import "leaflet/dist/leaflet.css";
+import QueryProvider from "./components/QueryProvider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${nata.className} antialiased`}>
-        <AuthSessionProvider>{children}</AuthSessionProvider>
+        <QueryProvider>{children}</QueryProvider>
       </body>
     </html>
   );

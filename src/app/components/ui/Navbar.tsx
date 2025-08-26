@@ -1,15 +1,15 @@
 "use client";
 import { Compass, Home, Menu, Spotlight, Users } from "lucide-react";
-import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useState } from "react";
 import UserDropdown from "./UserDropdown/UserDropdown";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { useSession } from "@/lib/auth-client";
 
-function Navbar() {
-  const { data: session } = useSession();
+function Navbar({ fixed = false }: { fixed: boolean }) {
   const [showDropdown, setShowDropdown] = useState(false);
+  const { data: session } = useSession();
 
   const pathname = usePathname();
 
@@ -22,7 +22,11 @@ function Navbar() {
     setShowDropdown((prev) => !prev);
   }
   return (
-    <div className="fixed top-0 left-0 z-50 w-full flex items-center justify-between px-12 py-5 bg-white/5 border-b border-white rounded-b-3xl shadow backdrop-blur-2xl">
+    <div
+      className={` ${
+        fixed ? "fixed" : ""
+      } top-0 left-0 z-50 w-full flex items-center justify-between px-12 py-5 bg-white/5 border-b border-white rounded-b-3xl shadow backdrop-blur-2xl`}
+    >
       <Link
         href={"/app"}
         className="flex gap-2 items-center justify-center cursor-pointer"
@@ -40,7 +44,9 @@ function Navbar() {
       <div className="items-center gap-12 px-6 py-3 font-semibold hidden md:flex border border-t-0 rounded-xl border-neutral-200 shadow-white md:ring-black/5 md:backdrop-blur-2xl md:bg-white/5 md:shadow-xs md:ring-1">
         <Link
           className={` cursor-pointer transition flex items-center gap-2 ${
-            isHomeActive ? "scale-120" : "hover:scale-110"
+            isHomeActive
+              ? "scale-120 text-black font-black"
+              : "hover:scale-110 text-gray-600"
           }`}
           href={"/app"}
         >
@@ -49,7 +55,9 @@ function Navbar() {
         <Link
           href={"/social"}
           className={` cursor-pointer transition flex items-center gap-2 ${
-            isUsersActive ? "scale-150" : "hover:scale-110"
+            isUsersActive
+              ? "scale-120 text-black font-black"
+              : "hover:scale-110 text-gray-600"
           }`}
         >
           <Users />
@@ -57,7 +65,9 @@ function Navbar() {
         <Link
           href={"/spotlight"}
           className={` cursor-pointer transition flex items-center gap-2 ${
-            isSpotlightActive ? "scale-125" : "hover:scale-110"
+            isSpotlightActive
+              ? "scale-120 text-black font-black"
+              : "hover:scale-110 text-gray-600"
           }`}
         >
           <Spotlight />
@@ -65,7 +75,9 @@ function Navbar() {
         <Link
           href={"/locate"}
           className={` cursor-pointer transition flex items-center gap-2 ${
-            isCompassActive ? "scale-125" : "hover:scale-110"
+            isCompassActive
+              ? "scale-120 text-black font-black"
+              : "hover:scale-110 text-gray-600"
           }`}
         >
           <Compass />
@@ -84,7 +96,7 @@ function Navbar() {
                 onClick={handleShowDropdown}
               />
               {showDropdown && (
-                <div className="absolute top-full right-0 mt-2 z-50">
+                <div className="absolute top-full right-0 mt-2 z-50 animate-dropdown">
                   <UserDropdown />
                 </div>
               )}

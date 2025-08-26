@@ -2,20 +2,32 @@
 
 import { motion, useMotionValue, useTransform } from "framer-motion";
 
+interface Category {
+  id: string;
+  name: string;
+}
+
+interface CategoryOnItem {
+  itemId: string;
+  categoryId: string;
+  category: Category;
+}
+
 interface Card {
-  id: number;
+  id: string;
   image: string;
-  title: string;
-  categories: string[];
+  name: string;
+  categories: CategoryOnItem[];
   price: number;
   rating?: number;
-  reviews: number;
+  totalReviews: number;
+  preferenceScore?: number;
 }
 
 interface SwipeableCardProps {
   card: Card;
   index: number;
-  onSwipe: (card: Card, direction: "left" | "right") => void;
+  onSwipe: (itemId: string, direction: "RIGHT" | "LEFT") => void;
 }
 
 export default function SwipeableCard({
@@ -29,38 +41,68 @@ export default function SwipeableCard({
   const rotate = useTransform(x, [-200, 200], [-18, 18]);
   const isTopCard = index === 0;
   const scale = 1 - index * 0.05;
+  const colourOverlay = useTransform(
+    x,
+    [-200, 0, 200],
+    ["rgba(255, 0,0,0.4)", "rgba(0,0,0,0)", "rgba(0,255,0,0.4)"]
+  );
+
+  const rightIconOpacity = useTransform(x, [0, 100, 200], [0, 0.5, 1]);
+  const leftIconOpacity = useTransform(x, [-200, -100, 0], [1, 0.5, 0]);
+  const iconScale = useTransform(x, [-200, 0, 200], [2, 0.7, 2]);
 
   function handleDragEnd() {
     const dragDistance = x.get();
     const threshold = 120;
 
     if (Math.abs(dragDistance) > threshold) {
-      const direction = dragDistance > 0 ? "right" : "left";
-      onSwipe(card, direction);
+      const direction = dragDistance > 0 ? "RIGHT" : "LEFT";
+      onSwipe(card.id, direction);
     }
   }
 
   return (
-    <motion.img
-      src={card.image}
-      alt="image"
+    <motion.div
       style={{
         gridRow: 1,
         gridColumn: 1,
-        opacity: isTopCard ? opacity : 1,
-        x: isTopCard ? x : 0,
-        rotate: isTopCard ? rotate : 0,
         zIndex: 10 - index,
         scale,
+        rotate: isTopCard ? rotate : 0,
+        x: isTopCard ? x : 0,
+        opacity: isTopCard ? opacity : 1,
       }}
-      className="rounded-2xl shadow-lg h-96 w-72 object-cover hover:cursor-grab active:cursor-grabbing "
+      className="group relative rounded-2xl shadow-lg h-96 w-72"
       drag={isTopCard ? "x" : false}
-      dragConstraints={{
-        left: 0,
-        right: 0,
-      }}
+      dragConstraints={{ left: 0, right: 0 }}
       onDragEnd={isTopCard ? handleDragEnd : undefined}
       animate={{ scale }}
-    />
+    >
+      <motion.img
+        src={card.image}
+        alt={card.name}
+        className="rounded-2xl shadow-lg h-full w-full object-cover"
+        draggable={false}
+      />
+
+      <motion.div
+        className="absolute inset-0 rounded-2xl pointer-events-none"
+        style={{ backgroundColor: colourOverlay }}
+      />
+
+      <motion.div
+        className="absolute inset-0 flex items-center justify-center text-4xl"
+        style={{ opacity: leftIconOpacity, scale: iconScale }}
+      >
+        🤮
+      </motion.div>
+
+      <motion.div
+        className="absolute inset-0 flex items-center justify-center text-4xl"
+        style={{ opacity: rightIconOpacity, scale: iconScale }}
+      >
+        💖
+      </motion.div>
+    </motion.div>
   );
 }

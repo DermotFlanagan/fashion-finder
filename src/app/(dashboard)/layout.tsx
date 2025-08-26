@@ -6,9 +6,11 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
-      <Navbar />
-      <main className="min-h-screen">{children}</main>
-    </>
+    <div className="min-h-screen flex flex-col">
+      <Navbar fixed={false} />
+      <main className="flex-1 flex items-center justify-center px-10 py-5">
+        {children}
+      </main>
+    </div>
   );
 }

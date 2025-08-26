@@ -16,7 +16,7 @@ function DropdownItem({
   if (href) {
     return (
       <Link href={href}>
-        <div className="flex gap-4 rounded-xl hover:bg-neutral-300 px-5 py-2 font-semibold rounded-tr-none rounded-bl-none cursor-pointer items-center justify-center">
+        <div className="w-full flex gap-4 rounded-xl hover:bg-neutral-300 px-5 py-2 font-semibold rounded-tr-none rounded-bl-none cursor-pointer items-start justify-between">
           {React.createElement(icon)} {title}
         </div>
       </Link>
@@ -25,7 +25,7 @@ function DropdownItem({
 
   return (
     <div onClick={onClick}>
-      <div className="flex gap-4 rounded-xl hover:bg-neutral-300 px-5 py-2 font-semibold rounded-tr-none rounded-bl-none cursor-pointer items-center justify-center">
+      <div className="w-full flex gap-4 rounded-xl hover:bg-neutral-300 px-5 py-2 font-semibold rounded-tr-none rounded-bl-none cursor-pointer items-start justify-between">
         {React.createElement(icon)} {title}
       </div>
     </div>
