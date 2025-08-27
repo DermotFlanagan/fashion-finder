@@ -11,22 +11,23 @@ datasource db {
 }
 
 model User {
-  id            String    @id
-  name          String
-  email         String
-  emailVerified Boolean
-  image         String?
-  createdAt     DateTime
-  updatedAt     DateTime
-  sessions      Session[]
-  accounts      Account[]
-  posts         Post[]
-  likes         Like[]
-  comments      Comment[]
-  following     Follow[] @relation("UserFollowing")
-  followers     Follow[] @relation("UserFollowers")
-  swipes        Swipe[]
-  preferences   UserPreference[]
+  id                      String    @id
+  name                    String
+  email                   String
+  emailVerified           Boolean
+  image                   String?
+  createdAt               DateTime
+  updatedAt               DateTime
+  sessions                Session[]
+  accounts                Account[]
+  posts                   Post[]
+  likes                   Like[]
+  comments                Comment[]
+  following               Follow[] @relation("UserFollowing")
+  followers               Follow[] @relation("UserFollowers")
+  swipes                  Swipe[]
+  preferences             UserPreference[]
+  hasCompletedOnboarding  Boolean @default(false)
 
   @@unique([email])
   @@map("user")

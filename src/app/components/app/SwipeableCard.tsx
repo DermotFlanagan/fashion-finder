@@ -47,8 +47,8 @@ export default function SwipeableCard({
     ["rgba(255, 0,0,0.4)", "rgba(0,0,0,0)", "rgba(0,255,0,0.4)"]
   );
 
-  const rightIconOpacity = useTransform(x, [0, 100, 200], [0, 0.5, 1]);
-  const leftIconOpacity = useTransform(x, [-200, -100, 0], [1, 0.5, 0]);
+  const rightIconOpacity = useTransform(x, [0, 100, 200], [0, 1, 1]);
+  const leftIconOpacity = useTransform(x, [-200, -100, 0], [1, 1, 0]);
   const iconScale = useTransform(x, [-200, 0, 200], [2, 0.7, 2]);
 
   function handleDragEnd() {

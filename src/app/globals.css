@@ -12,7 +12,7 @@
   --font-mono: var(--font-geist-mono);
   --animate-throb: throb 0.8s ease-in-out infinite;
   --animate-wave: wave 1.5s ease-in-out infinite;
-  --animate-dropdown: dropdown 0.3s ease-out forwards;
+  --animate-dropdown: dropdown 0.2s ease-out forwards;
 }
 
 @keyframes throb {

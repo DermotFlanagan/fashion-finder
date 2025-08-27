@@ -59,7 +59,7 @@ export default function SocialPage() {
   const [formData, setFormData] = useState({ title: "", body: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  if (!session || isLoading) {
+  if (!session) {
     return <Spinner />;
   }
 
@@ -111,7 +111,7 @@ export default function SocialPage() {
         <div className="flex py-3 gap-4 items-center justify-center sticky top-0 z-10 bg-white/80 backdrop-blur-xl border-b border-gray-200 ">
           <button
             onClick={() => setSortBy("new")}
-            className={`hover:text-purple-500 transition cursor-pointer flex gap-2 justify-center items-center ${
+            className={`hover:text-purple-500 transition cursor-pointer flex gap-2 justify-center items-center font-semibold ${
               sortBy === "new" && "text-purple-500"
             }`}
           >
@@ -121,7 +121,7 @@ export default function SocialPage() {
           <h1 className="text-gray-500 cursor-default">|</h1>
           <button
             onClick={() => setSortBy("hot")}
-            className={`hover:text-purple-500 transition cursor-pointer flex gap-2 justify-center items-center ${
+            className={`hover:text-purple-500 transition cursor-pointer flex gap-2 justify-center items-center font-semibold ${
               sortBy === "hot" && "text-purple-500"
             }`}
           >
@@ -129,19 +129,25 @@ export default function SocialPage() {
             Hot
           </button>
         </div>
-        <div className="flex gap-4 p-2 md:p-6 flex-col">
-          {posts.length > 0 ? (
-            posts.map((post) => (
-              <PostCard key={post.id} post={post} currUser={currUser} />
-            ))
-          ) : (
-            <div className="flex flex-col items-center justify-center bg-white px-4 py-4 rounded-xl">
-              <h1 className="text-4xl mb-4">🧐</h1>
-              <h1 className="text-xl font-bold">It's a bit quiet...</h1>
-              <p className="text-lg text-neutral-400">Be the first to post!</p>
-            </div>
-          )}
-        </div>
+        {isLoading ? (
+          <Spinner />
+        ) : (
+          <div className="flex gap-4 p-2 md:p-6 flex-col">
+            {posts.length > 0 ? (
+              posts.map((post) => (
+                <PostCard key={post.id} post={post} currUser={currUser} />
+              ))
+            ) : (
+              <div className="flex flex-col items-center justify-center bg-white px-4 py-4 rounded-xl">
+                <h1 className="text-4xl mb-4">🧐</h1>
+                <h1 className="text-xl font-bold">It's a bit quiet...</h1>
+                <p className="text-lg text-neutral-400">
+                  Be the first to post!
+                </p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="flex-[0.8]">

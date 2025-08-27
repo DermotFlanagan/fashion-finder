@@ -1,11 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Ellipsis, Heart, MessageSquare } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Modal from "../ui/Modal";
 import { useSession } from "@/lib/auth-client";
 import PostDropdown from "../ui/UserDropdown/PostDropdown";
 import { useDeletePost, useEditPost } from "@/hooks/usePosts";
+import { useClickOutside } from "@/hooks/useClickOutside";
 
 interface User {
   id: string;
@@ -48,6 +49,9 @@ function PostCard({ post, currUser }: { post: Post; currUser: User }) {
   const [formData, setFormData] = useState({ content: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useClickOutside(dropdownRef, () => setShowOptions(false));
 
   const queryClient = useQueryClient();
 
@@ -131,7 +135,10 @@ function PostCard({ post, currUser }: { post: Post; currUser: User }) {
                 />
               )}
               {showOptions && (
-                <div className="absolute items-end justify-end top-6 right-0 animate-dropdown">
+                <div
+                  ref={dropdownRef}
+                  className="absolute items-end justify-end top-6 right-0 animate-dropdown"
+                >
                   <PostDropdown
                     onDelete={handleDeletePost}
                     onEdit={handleEditPost}

@@ -52,10 +52,12 @@ export async function GET() {
         const categoryScore = preferenceMap.get(categoryOnItem.categoryId) || 0;
         totalScore += categoryScore;
       });
+      // Since some items have more categories than others, normalise the score
+      const normalisedScore = totalScore / item.categories.length;
 
       return {
         ...item,
-        preferenceScore: totalScore,
+        preferenceScore: normalisedScore,
       };
     });
 
