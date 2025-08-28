@@ -2,11 +2,14 @@
 import ActionButtons from "@/app/components/app/ActionButtons";
 import CardInfo from "@/app/components/app/CardInfo";
 import CardStack from "@/app/components/app/CardStack";
+import CreateItemModal from "@/app/components/app/CreateItemModal/CreateItemModal";
 import NoCards from "@/app/components/app/NoCards";
+import Modal from "@/app/components/ui/Modal";
 import Spinner from "@/app/components/ui/Spinner";
 import { useCards } from "@/hooks/useCards";
 import { useSwipe } from "@/hooks/useSwipe";
 import { useSession } from "@/lib/auth-client";
+import { Plus, Shirt } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface Category {
@@ -37,6 +40,7 @@ export default function AppPage() {
   const { swipe, isLoading: isSwipeLoading } = useSwipe();
   const [remainingCards, setRemainingCards] = useState<Card[]>([]);
   const [wishlistedCards, setWishlistedCards] = useState<Card[]>([]);
+  const [showCreateItemModal, setShowCreateItemModal] = useState(false);
 
   useEffect(
     function () {
@@ -112,24 +116,38 @@ export default function AppPage() {
           <NoCards />
         </div>
       ) : (
-        <div className="flex gap-8 justify-center md:bg-white/50 md:shadow-lg md:ring-1 ring-white/15 md:px-20 md:py-10 rounded-3xl md:backdrop-blur-2xl">
-          <div className="flex flex-col items-center justify-center p-0 ">
-            <CardStack cards={remainingCards} onSwipe={handleSwipe} />
-            {currentCard && (
-              <ActionButtons
-                onSwipeLeft={() => handleLeft()}
-                onSwipeRight={() => handleRight()}
-                disabled={remainingCards.length == 0}
-                onHeart={() => handleHeart(currentCard)}
-              />
-            )}
+        <div className="">
+          <div className="flex gap-8 justify-center md:bg-white/50 md:shadow-lg md:ring-1 ring-white/15 md:px-20 md:py-10 rounded-3xl md:backdrop-blur-2xl">
+            <div className="flex flex-col items-center justify-center p-0 ">
+              <CardStack cards={remainingCards} onSwipe={handleSwipe} />
+              {currentCard && (
+                <ActionButtons
+                  onSwipeLeft={() => handleLeft()}
+                  onSwipeRight={() => handleRight()}
+                  disabled={remainingCards.length == 0}
+                  onHeart={() => handleHeart(currentCard)}
+                />
+              )}
+            </div>
+
+            <div className="hidden md:block w-100">
+              {currentCard && <CardInfo card={currentCard} />}
+            </div>
           </div>
 
-          <div className="hidden md:block w-100">
-            {currentCard && <CardInfo card={currentCard} />}
+          <div
+            className="absolute bottom-10 right-10 rounded-full bg-purple-400 p-3 shadow-lg cursor-pointer text-white hover:bg-purple-700 transition"
+            onClick={() => setShowCreateItemModal(true)}
+          >
+            <Shirt />
           </div>
         </div>
       )}
+
+      <CreateItemModal
+        isOpen={showCreateItemModal}
+        onClose={() => setShowCreateItemModal(false)}
+      />
     </div>
   );
 }
