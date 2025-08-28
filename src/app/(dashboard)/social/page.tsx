@@ -140,7 +140,7 @@ export default function SocialPage() {
             ) : (
               <div className="flex flex-col items-center justify-center bg-white px-4 py-4 rounded-xl">
                 <h1 className="text-4xl mb-4">🧐</h1>
-                <h1 className="text-xl font-bold">It's a bit quiet...</h1>
+                <h1 className="text-xl font-bold">It&apos;s a bit quiet...</h1>
                 <p className="text-lg text-neutral-400">
                   Be the first to post!
                 </p>

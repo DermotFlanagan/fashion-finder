@@ -1,11 +1,20 @@
+"use client";
 import Image from "next/image";
 import SignInButton from "./components/ui/SignInButton";
+import { useSession } from "@/lib/auth-client";
+import { redirect } from "next/navigation";
 
 export default function HomePage() {
+  const { data: session } = useSession();
+
+  if (session) {
+    redirect("/app");
+  }
+
   return (
     <div className="relative h-screen w-screen overflow-hidden max-h-screen">
       <video
-        className="absolute t0p-0 left-0 h-full w-full object-cover -z-10"
+        className="absolute top-0 left-0 h-full w-full object-cover -z-10 max-h-screen pointer-events-none"
         autoPlay
         loop
         muted
@@ -35,10 +44,7 @@ export default function HomePage() {
 
         <hr className="mt-4 w-24 border-t border-white" />
 
-        <div className="mt-8 flex gap-8">
-          {/* <button className="bg-white text-black px-6 py-2 rounded-full cursor-pointer hover:bg-gray-300 transition">
-            Sign in
-          </button> */}
+        <div className="mt-8 flex gap-8 relative z-50 flex-col md:flex-row">
           <SignInButton provider="github" />
           <SignInButton provider="google" />
         </div>

@@ -7,12 +7,14 @@ function CategoryCard({
   image,
   isSelected,
   onClick,
+  occupied,
 }: {
   name: string;
   type: string;
   isSelected: boolean;
   image: string;
   onClick: () => void;
+  occupied: boolean;
 }) {
   return (
     <div
@@ -20,7 +22,8 @@ function CategoryCard({
         isSelected
           ? "-translate-y-2 shadow-lg"
           : "hover:-translate-y-2 shadow-md "
-      }`}
+      }
+      ${occupied && "pointer-events-none"}`}
       onClick={onClick}
     >
       <Image
@@ -28,9 +31,9 @@ function CategoryCard({
         height={960}
         src={image}
         alt={name}
-        className={`h-full w-full transition rounded-t-2xl object-cover ${
+        className={`h-full w-full transition rounded-t-2xl object-cover  ${
           isSelected && "scale-110"
-        }`}
+        } ${occupied && "grayscale opacity-40"}`}
       />
 
       <div
@@ -38,7 +41,8 @@ function CategoryCard({
           isSelected
             ? "from-purple-900 to-transparent"
             : "from-black/80 to-transparent"
-        } `}
+        } 
+        `}
       />
 
       <div className="absolute flex gap-2 text-white flex-col items-start bottom-5 left-5">

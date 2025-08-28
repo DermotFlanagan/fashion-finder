@@ -15,7 +15,7 @@ function SignInButton({ provider }: { provider: string }) {
 
   return (
     <button
-      className="border border-white  px-6 py-2 rounded-full backdrop-blur cursor-pointer hover:bg-white hover:text-black transition flex gap-2"
+      className="border border-white  px-6 py-2 rounded-full cursor-pointer hover:bg-white hover:text-black transition flex gap-2 z-50"
       onClick={() => handleLogIn(provider)}
     >
       {provider == "github" && <Github size={24} />}

@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import CategoryCard from "./CategoryCard";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -223,6 +223,8 @@ function CategoryCarousel({
   handleSelect: (name: string) => void;
   selectedLiked: string[];
 }) {
+  const [liked, setLiked] = useState<string[]>([]);
+  const [disliked, setDisliked] = useState<string[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   useGSAP(function () {
     if (!containerRef.current) return;
@@ -235,6 +237,14 @@ function CategoryCarousel({
       ease: "power2.out",
     });
   }, []);
+
+  useEffect(function () {
+    const likedFilter = localStorage.getItem("likedCategories");
+    const dislikedFilter = localStorage.getItem("dislikedCategories");
+    if (likedFilter) setLiked(JSON.parse(likedFilter));
+    if (dislikedFilter) setDisliked(JSON.parse(dislikedFilter));
+  }, []);
+
   return (
     <div className="w-full overflow-x-auto max-w-[80vw]">
       <div
@@ -247,6 +257,7 @@ function CategoryCarousel({
               {...c}
               isSelected={selectedLiked.includes(c.name)}
               onClick={() => handleSelect(c.name)}
+              occupied={liked.includes(c.name) || disliked.includes(c.name)}
             />
           </div>
         ))}

@@ -7,6 +7,7 @@ import { useSession } from "@/lib/auth-client";
 import PostDropdown from "../ui/UserDropdown/PostDropdown";
 import { useDeletePost, useEditPost } from "@/hooks/usePosts";
 import { useClickOutside } from "@/hooks/useClickOutside";
+import { redirect } from "next/navigation";
 
 interface User {
   id: string;
@@ -112,7 +113,10 @@ function PostCard({ post, currUser }: { post: Post; currUser: User }) {
   return (
     <div className="bg-white rounded-2xl flex p-3 flex-col shadow-sm">
       <div className="flex">
-        <div className="w-12 h-12 flex-shrink-0 cursor-pointer">
+        <div
+          className="w-12 h-12 flex-shrink-0 cursor-pointer"
+          onClick={() => redirect(`account/${post.userId}`)}
+        >
           <Image
             src={post.user.image || ""}
             alt={post.user.name}
@@ -125,7 +129,10 @@ function PostCard({ post, currUser }: { post: Post; currUser: User }) {
         <div className="flex flex-col ml-2 min-w-0 w-full">
           <div className="flex flex-col">
             <div className="flex justify-between relative">
-              <h3 className="font-semibold text-gray-400 cursor-pointer text-sm">
+              <h3
+                className="font-semibold text-gray-400 cursor-pointer text-sm"
+                onClick={() => redirect(`account/${post.userId}`)}
+              >
                 {post.user.name}
               </h3>
               {post.userId == currUser.id && (
