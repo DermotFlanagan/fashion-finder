@@ -32,7 +32,7 @@ export default async function UserAccountPage({
               className="rounded-full w-35 h-35 outline-8 outline-white"
             />
             <div className="bg-white px-4 py-6 rounded-t-2xl">
-              <h1 className="font-semibold text-2xl flex gap-2 items-center justify-center">
+              <h1 className="font-semibold text-2xl flex gap-2 items-center justify-start">
                 {user?.name} {user?.emailVerified && <BadgeCheck />}
               </h1>
               <div className="flex gap-4">

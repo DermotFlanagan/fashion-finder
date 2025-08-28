@@ -3,6 +3,7 @@ import Modal from "../../ui/Modal";
 import ImageSelector from "./ImageSelector";
 import Image from "next/image";
 import CategorySelect from "./CategorySelect";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 
 function CreateItemModal({
   isOpen = false,
@@ -25,6 +26,85 @@ function CreateItemModal({
     images: [],
   });
 
+  const queryClient = useQueryClient();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const createItemMutation = useMutation({
+    mutationFn: async (data: {
+      title: string;
+      price: number;
+      categories: string[];
+      images: string[];
+    }) => {
+      const response = await fetch("/api/items", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) throw new Error("Failed to create item");
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["items"] });
+      setFormData({ title: "", price: 0, categories: [], images: [] });
+      onClose();
+    },
+    onError: (err) => {
+      console.error("Error creating item:", err);
+    },
+  });
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (
+      !formData.title.trim() ||
+      formData.images.length < 1 ||
+      formData.categories.length < 1 ||
+      formData.price < 0.01
+    )
+      return;
+
+    setIsSubmitting(true);
+
+    try {
+      const uploadedUrls = await Promise.all(
+        formData.images.map(async (file) => {
+          const formDataToSend = new FormData();
+          formDataToSend.append("file", file);
+
+          const res = await fetch("/api/upload", {
+            method: "POST",
+            body: formDataToSend,
+          });
+          const data = await res.json();
+          return data.url;
+        })
+      );
+
+      const bodyToSend = {
+        title: formData.title,
+        price: formData.price,
+        categories: formData.categories,
+        images: uploadedUrls,
+      };
+
+      const response = await fetch("/api/items", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(bodyToSend),
+      });
+
+      if (!response.ok) throw new Error("Failed to create new item");
+
+      setFormData({ title: "", price: 0, categories: [], images: [] });
+      onClose();
+    } catch (err) {
+      console.error("Error while creating item: ", err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   function handleImageChange(files: FileList | null) {
     if (!files) return;
     const selectedFiles = Array.from(files);
@@ -43,7 +123,7 @@ function CreateItemModal({
         onClose();
       }}
     >
-      <form className="flex gap-2 flex-col">
+      <form className="flex gap-2 flex-col" onSubmit={handleSubmit}>
         <div className="flex gap-2">
           <ImageSelector onChange={handleImageChange} />
           <div className="grid grid-rows-2 grid-cols-2">
@@ -80,8 +160,11 @@ function CreateItemModal({
         <div className="flex-col flex">
           <label className="font-semibold">Item Categories</label>
           <CategorySelect
-            onChange={(selectedValues) =>
-              setFormData((prev) => ({ ...prev, categories: selectedValues }))
+            onChange={(selected) =>
+              setFormData((prev) => ({
+                ...prev,
+                categories: selected.map((s) => s.value),
+              }))
             }
           />
         </div>
@@ -98,9 +181,18 @@ function CreateItemModal({
             }
             className="outline-none rounded-md bg-gray-200 px-3 py-2"
             min={0.01}
-            max={1000}
+            max={2000}
+            step="any"
           />
         </div>
+
+        <button
+          type="submit"
+          disabled={createItemMutation.isPending}
+          className="mt-4 cursor-pointer bg-purple-400 rounded-md text-white px-4 py-1 font-semibold hover:bg-purple-500 transition"
+        >
+          {createItemMutation.isPending ? "Please wait..." : "Post"}
+        </button>
       </form>
     </Modal>
   );

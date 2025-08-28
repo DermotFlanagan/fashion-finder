@@ -28,6 +28,7 @@ model User {
   swipes                  Swipe[]
   preferences             UserPreference[]
   hasCompletedOnboarding  Boolean @default(false)
+  items                   Item[]
 
   @@unique([email])
   @@map("user")
@@ -154,13 +155,25 @@ model Item {
   id            String @id @default(cuid())
   name          String
   price         Float
-  image         String
+  images        ItemImage[]
   rating        Float
   totalReviews  Int
   categories    CategoryOnItem[]
   swipes        Swipe[]
+  userId        String
+  user          User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
 
   @@map("item")
+}
+
+model ItemImage {
+  id          String @id @default(cuid())
+  url         String
+  itemId      String
+  item        Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@map("item_image")
 }
 
 model Category {

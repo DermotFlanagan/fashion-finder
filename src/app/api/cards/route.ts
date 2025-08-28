@@ -37,6 +37,8 @@ export async function GET() {
         },
       },
       include: {
+        images: true,
+        user: true,
         categories: {
           include: {
             category: true,

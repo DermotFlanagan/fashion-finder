@@ -13,7 +13,7 @@ interface CategoryOnItem {
 
 interface Card {
   id: string;
-  image: string;
+  images: string[];
   name: string;
   categories: CategoryOnItem[];
   price: number;

@@ -1,6 +1,8 @@
 "use client";
 
 import { motion, useMotionValue, useTransform } from "framer-motion";
+import { ArrowRightCircle } from "lucide-react";
+import { useState } from "react";
 
 interface Category {
   id: string;
@@ -13,9 +15,13 @@ interface CategoryOnItem {
   category: Category;
 }
 
+interface Image {
+  url: string;
+}
+
 interface Card {
   id: string;
-  image: string;
+  images: Image[];
   name: string;
   categories: CategoryOnItem[];
   price: number;
@@ -50,6 +56,7 @@ export default function SwipeableCard({
   const rightIconOpacity = useTransform(x, [0, 100, 200], [0, 1, 1]);
   const leftIconOpacity = useTransform(x, [-200, -100, 0], [1, 1, 0]);
   const iconScale = useTransform(x, [-200, 0, 200], [2, 0.7, 2]);
+  const [imgIdx, setImgIdx] = useState(0);
 
   function handleDragEnd() {
     const dragDistance = x.get();
@@ -79,11 +86,22 @@ export default function SwipeableCard({
       animate={{ scale }}
     >
       <motion.img
-        src={card.image}
+        src={card.images?.[imgIdx]?.url ?? undefined}
         alt={card.name}
-        className="rounded-2xl shadow-lg h-full w-full object-cover"
+        className="rounded-2xl shadow-lg h-full w-full object-cover cursor-pointer pointer-events-auto"
         draggable={false}
       />
+
+      <div
+        className="absolute bottom-2 right-2 z-50 bg-purple-700 rounded-full p-2 text-white cursor-pointer opacity-40 hover:opacity-70 transition"
+        onClick={(e) => {
+          e.stopPropagation();
+          if (!card.images || card.images.length === 0) return;
+          setImgIdx((prev) => (prev + 1) % card.images.length);
+        }}
+      >
+        <ArrowRightCircle />
+      </div>
 
       <motion.div
         className="absolute inset-0 rounded-2xl pointer-events-none"

@@ -1,5 +1,6 @@
 import { Star } from "lucide-react";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 import React from "react";
 
 interface Category {
@@ -12,16 +13,21 @@ interface CategoryOnItem {
   categoryId: string;
   category: Category;
 }
+interface User {
+  id: string;
+  name: string;
+  image: string | null;
+}
 
 interface Card {
   id: string;
-  image: string;
+  images: string[];
   name: string;
   categories: CategoryOnItem[];
   price: number;
   rating?: number;
   totalReviews: number;
-  preferenceScore?: number;
+  user: User;
 }
 
 interface CardInfoProps {
@@ -84,11 +90,14 @@ function CardInfo({ card }: CardInfoProps) {
           )}
         </div>
 
-        <div className="">
-          <h2>
-            Brand / User Name{" "}
-            <span className={`font-bold ${getRatingColour(76)}`}>(76%)</span>
+        <div className="flex gap-2">
+          <h2
+            className="hover:underline cursor-pointer"
+            onClick={() => redirect(`/account/${card.user.id}`)}
+          >
+            {card.user.name}
           </h2>
+          <span className={`font-bold ${getRatingColour(76)}`}>(76%)</span>
         </div>
 
         <div className="">
