@@ -1,4 +1,3 @@
-import { getSession } from "@/lib/auth-client";
 import Navbar from "../components/ui/Navbar";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/db";

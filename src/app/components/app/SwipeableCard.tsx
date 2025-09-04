@@ -93,7 +93,7 @@ export default function SwipeableCard({
       />
 
       <div
-        className="absolute bottom-2 right-2 z-50 bg-purple-700 rounded-full p-2 text-white cursor-pointer opacity-0 group-hover:opacity-40 transition hover:opacity-70"
+        className="absolute bottom-2 right-2 z-50 bg-purple-500 rounded-full p-2 text-white cursor-pointer opacity-0 group-hover:opacity-40 transition hover:opacity-70"
         onClick={(e) => {
           e.stopPropagation();
           if (!card.images || card.images.length === 0) return;

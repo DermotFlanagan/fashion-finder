@@ -1,6 +1,7 @@
 "use client";
 
 import PostCard from "@/app/components/social/PostCard";
+import TrendingItems from "@/app/components/social/TrendingItems";
 import Modal from "@/app/components/ui/Modal";
 import Spinner from "@/app/components/ui/Spinner";
 import { useSession } from "@/lib/auth-client";
@@ -99,15 +100,9 @@ export default function SocialPage() {
         <PenSquare />
       </div>
 
-      <div className="flex-[0.8]">
-        <div className="bg-white">
-          <h1>
-            This space is going to be used to display the most wishlisted items
-          </h1>
-        </div>
-      </div>
+      <TrendingItems />
 
-      <div className="flex-[1.4] bg-white/50 rounded-2xl ring-2 ring-black/5 flex flex-col overflow-y-auto max-h-[80vh] min-h-[80vh] md:max-w-[33vw] max-w-[85vw] md:min-w-[33vw] min-w-[85vw]">
+      <div className="flex-[1.8] bg-white/50 rounded-2xl ring-2 ring-black/5 flex flex-col overflow-y-auto max-h-[80vh] min-h-[80vh] md:max-w-[40vw] max-w-[85vw] md:min-w-[40vw] min-w-[85vw]">
         <div className="flex py-3 gap-4 items-center justify-center sticky top-0 z-10 bg-white/80 backdrop-blur-xl border-b border-gray-200 ">
           <button
             onClick={() => setSortBy("new")}
@@ -150,7 +145,7 @@ export default function SocialPage() {
         )}
       </div>
 
-      <div className="flex-[0.8]">
+      <div className="flex-[0.6] hidden md:block">
         <div className="bg-white">
           <h1>This space will display notifications</h1>
         </div>

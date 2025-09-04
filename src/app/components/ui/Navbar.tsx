@@ -1,5 +1,5 @@
 "use client";
-import { Compass, Home, Menu, Spotlight, Users } from "lucide-react";
+import { Compass, Home, Menu, Users } from "lucide-react";
 import Image from "next/image";
 import { useRef, useState } from "react";
 import UserDropdown from "./UserDropdown/UserDropdown";
@@ -18,7 +18,6 @@ function Navbar({ fixed = false }: { fixed: boolean }) {
 
   const isHomeActive = pathname === "/app";
   const isUsersActive = pathname === "/social";
-  const isSpotlightActive = pathname === "/spotlight";
   const isCompassActive = pathname === "/locate";
 
   function handleShowDropdown() {
@@ -64,16 +63,6 @@ function Navbar({ fixed = false }: { fixed: boolean }) {
           }`}
         >
           <Users />
-        </Link>
-        <Link
-          href={"/spotlight"}
-          className={` cursor-pointer transition flex items-center gap-2 ${
-            isSpotlightActive
-              ? "scale-120 text-black font-black"
-              : "hover:scale-110 text-gray-600"
-          }`}
-        >
-          <Spotlight />
         </Link>
         <Link
           href={"/locate"}

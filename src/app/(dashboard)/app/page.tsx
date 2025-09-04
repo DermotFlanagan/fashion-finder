@@ -4,13 +4,12 @@ import CardInfo from "@/app/components/app/CardInfo";
 import CardStack from "@/app/components/app/CardStack";
 import CreateItemModal from "@/app/components/app/CreateItemModal/CreateItemModal";
 import NoCards from "@/app/components/app/NoCards";
-import Modal from "@/app/components/ui/Modal";
 import Spinner from "@/app/components/ui/Spinner";
 import { useCards } from "@/hooks/useCards";
 import { useSwipe } from "@/hooks/useSwipe";
 import { useSession } from "@/lib/auth-client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus, Shirt } from "lucide-react";
+import { Shirt } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface Category {

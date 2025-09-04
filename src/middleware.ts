@@ -21,6 +21,5 @@ export const config = {
     "/settings",
     "/social",
     "/locate",
-    "/spotlight",
   ],
 };
