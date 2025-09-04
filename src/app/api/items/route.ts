@@ -1,7 +1,6 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
-import { toNamespacedPath } from "node:path/win32";
 
 export async function POST(request: NextRequest) {
   try {

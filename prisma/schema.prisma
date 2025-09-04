@@ -29,6 +29,7 @@ model User {
   preferences             UserPreference[]
   hasCompletedOnboarding  Boolean @default(false)
   items                   Item[]
+  wishlist                Wishlist[]
 
   @@unique([email])
   @@map("user")
@@ -162,6 +163,7 @@ model Item {
   swipes        Swipe[]
   userId        String
   user          User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  wishlist      Wishlist[]
 
 
   @@map("item")
@@ -206,3 +208,15 @@ model UserPreference {
   @@map("user_preference")
 }
 
+model Wishlist {
+  id            String @id @default(cuid())
+  userId        String
+  itemId        String
+  createdAt     DateTime @default(now())
+  user          User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item          Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, itemId])
+  @@index([userId, createdAt])
+  @@map("wishlist")
+}

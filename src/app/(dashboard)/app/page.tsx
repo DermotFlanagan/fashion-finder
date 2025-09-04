@@ -9,6 +9,7 @@ import Spinner from "@/app/components/ui/Spinner";
 import { useCards } from "@/hooks/useCards";
 import { useSwipe } from "@/hooks/useSwipe";
 import { useSession } from "@/lib/auth-client";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus, Shirt } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -36,18 +37,34 @@ interface Card {
 
 export default function AppPage() {
   const { data: session } = useSession();
-  const { data: cards, isLoading, error, refetch } = useCards();
-  const { swipe, isLoading: isSwipeLoading } = useSwipe();
+  const { data: cards, isLoading, error } = useCards();
+  const { swipe } = useSwipe();
   const [remainingCards, setRemainingCards] = useState<Card[]>([]);
-  const [wishlistedCards, setWishlistedCards] = useState<Card[]>([]);
   const [showCreateItemModal, setShowCreateItemModal] = useState(false);
+  const queryClient = useQueryClient();
 
-  useEffect(
-    function () {
-      localStorage.setItem("wishlist", JSON.stringify(wishlistedCards)); // TEMP, move to backend storage later
+  const addToWishlist = useMutation({
+    mutationFn: async function (itemId: string) {
+      const response = await fetch("/api/wishlist", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId: session?.user?.id, itemId }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to add item to wishlist");
+      }
+      return response.json();
     },
-    [wishlistedCards]
-  );
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["wishlist"] });
+    },
+    onError: (error) => {
+      console.error("Error while adding item to wishlist: ", error);
+    },
+  });
 
   useEffect(
     function () {
@@ -92,18 +109,11 @@ export default function AppPage() {
   }
 
   function handleHeart(card: Card) {
-    setWishlistedCards((prev) => {
-      const isInWishlist = prev.some(
-        (wishlistedCard) => wishlistedCard.id === card.id
-      );
-
-      if (isInWishlist) {
-        return prev;
-      }
-      const newWishlist = [...prev, card];
-
-      return newWishlist;
-    });
+    if (!session?.user?.id) {
+      console.error("No user session");
+      return;
+    }
+    addToWishlist.mutate(card.id);
   }
 
   if (isLoading) return <Spinner />;

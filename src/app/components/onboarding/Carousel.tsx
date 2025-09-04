@@ -214,6 +214,42 @@ const categories = [
     image:
       "https://images.unsplash.com/photo-1602706294170-1fed8eecd9f9?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
+  {
+    name: "gothic",
+    type: "style",
+    image:
+      "https://images.unsplash.com/photo-1677559027858-f068b59dbaed?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  },
+  {
+    name: "punk",
+    type: "style",
+    image:
+      "https://images.unsplash.com/photo-1676762056605-1bb0f66c8ee2?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzZ8fHB1bmt8ZW58MHx8MHx8fDA%3D",
+  },
+  {
+    name: "graphic",
+    type: "style",
+    image:
+      "https://images.unsplash.com/photo-1745179294283-f9d069f4d38d?q=80&w=765&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  },
+  {
+    name: "sports",
+    type: "style",
+    image:
+      "https://images.unsplash.com/photo-1563382563268-23859556c3f2?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8Zm9vdGJhbGwlMjBzaGlydCUyMGxpdmVycG9vbHxlbnwwfHwwfHx8MA%3D%3D",
+  },
+  {
+    name: "purple",
+    type: "colour",
+    image:
+      "https://images.unsplash.com/photo-1581602835355-ef01c46a2fd1?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  },
+  {
+    name: "blouse",
+    type: "item",
+    image:
+      "https://images.unsplash.com/photo-1549062572-544a64fb0c56?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  },
 ];
 
 function CategoryCarousel({

@@ -1,45 +1,81 @@
 "use client";
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, Trash } from "lucide-react";
 import { useSession } from "@/lib/auth-client";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import Spinner from "@/app/components/ui/Spinner";
 
-interface Card {
-  id: number;
-  image: string;
-  title: string;
-  categories: string[];
-  price: number;
-  reviews: number;
+interface WishlistItem {
+  id: string;
+  userId: string;
+  itemId: string;
+  createdAt: string;
+  item: {
+    id: string;
+    name: string;
+    price: number;
+    rating: number;
+    totalReviews: number;
+    images: { id: string; url: string; itemId: string }[];
+    categories: {
+      category: {
+        id: string;
+        name: string;
+      };
+    }[];
+  };
 }
 
 export default function WishlistPage() {
   const { data: session } = useSession();
-  const [wishlist, setWishlist] = useState<Card[]>([]);
+  const queryClient = useQueryClient();
 
-  useEffect(function () {
-    const wishlist = localStorage.getItem("wishlist");
-    if (wishlist) {
-      setWishlist(JSON.parse(wishlist));
-    }
-  }, []);
+  const { data: wishlist = [], isLoading } = useQuery<WishlistItem[]>({
+    queryKey: ["wishlist"],
+    queryFn: async function () {
+      const response = await fetch("/api/wishlist");
+      if (!response.ok) {
+        throw new Error("Failed to fetch wishlist");
+      }
+      return response.json();
+    },
+    enabled: !!session,
+  });
 
-  if (!session) {
-    return <div>Loading session...</div>;
+  const deleteWishlistedItem = useMutation({
+    mutationFn: async function (itemId: string) {
+      const response = await fetch("/api/wishlist", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ itemId }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete item from wishlist");
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["wishlist"] });
+    },
+  });
+
+  if (!session || isLoading) {
+    return <Spinner />;
   }
 
-  function handleDelete(itemId: number) {
-    const updatedWishlist = wishlist.filter((item) => item.id !== itemId);
-    setWishlist(updatedWishlist);
-    localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
+  function handleDelete(itemId: string) {
+    deleteWishlistedItem.mutate(itemId);
   }
 
   return (
     <div className="flex items-center justify-center p-4">
       <div className="bg-white/50 shadow-lg ring-1 ring-white/15 px-8 py-10 rounded-3xl backdrop-blur-2xl w-full max-w-6xl max-h-[80vh] flex flex-col">
         <div className="flex items-center gap-4 mb-8 flex-shrink-0">
-          <Link href="/account">
+          <Link href="/app">
             <ArrowLeft size={24} />
           </Link>
           <div className="flex items-center gap-4">
@@ -57,21 +93,28 @@ export default function WishlistPage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-4">
-              {wishlist.map((item) => (
+              {wishlist.map((wishlistItem) => (
                 <div
-                  key={item.id}
+                  key={wishlistItem.id}
                   className="rounded-2xl overflow-hidden border border-gray-200 hover:border-gray-300 hover:shadow-md transition group"
                 >
                   <div className="aspect-square relative w-48 h-48">
                     <Image
-                      src={item.image}
-                      alt={item.title}
+                      src={wishlistItem.item.images[0]?.url || ""}
+                      alt={wishlistItem.item.name}
                       fill
                       className="object-cover"
                     />
                     <div
-                      className="rounded-full bg-red-500 opacity-0 absolute top-2 right-2 p-2 group-hover:opacity-100 shadow-lg text-neutral-100 hover:bg-red-700 transition cursor-pointer"
-                      onClick={() => handleDelete(item.id)}
+                      className={`rounded-full bg-red-500 opacity-0 absolute top-2 right-2 p-2 group-hover:opacity-100 shadow-lg text-neutral-100 hover:bg-red-700 transition cursor-pointer ${
+                        deleteWishlistedItem.isPending
+                          ? "opacity-50 cursor-not-allowed"
+                          : ""
+                      }`}
+                      onClick={() =>
+                        !deleteWishlistedItem.isPending &&
+                        handleDelete(wishlistItem.item.id)
+                      }
                     >
                       <Trash size={24} />
                     </div>

@@ -116,7 +116,7 @@ function CreateItemModal({
 
   return (
     <Modal
-      title="Upload item"
+      title="Upload Item"
       isOpen={isOpen}
       onClose={() => {
         setFormData({ title: "", price: 0, categories: [], images: [] });
@@ -126,7 +126,7 @@ function CreateItemModal({
       <form className="flex gap-2 flex-col" onSubmit={handleSubmit}>
         <div className="flex gap-2">
           <ImageSelector onChange={handleImageChange} />
-          <div className="grid grid-rows-2 grid-cols-2">
+          <div className="grid grid-rows-2 grid-cols-2 gap-2">
             {formData.images.map((img, idx) => {
               const objectUrl = URL.createObjectURL(img);
               return (

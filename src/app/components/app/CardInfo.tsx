@@ -1,4 +1,4 @@
-import { Star } from "lucide-react";
+import { Star, User } from "lucide-react";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import React from "react";
@@ -92,9 +92,10 @@ function CardInfo({ card }: CardInfoProps) {
 
         <div className="flex gap-2">
           <h2
-            className="hover:underline cursor-pointer"
+            className="hover:underline cursor-pointer flex gap-2"
             onClick={() => redirect(`/account/${card.user.id}`)}
           >
+            <User />
             {card.user.name}
           </h2>
           <span className={`font-bold ${getRatingColour(76)}`}>(76%)</span>
